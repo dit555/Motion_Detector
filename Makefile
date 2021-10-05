@@ -1,7 +1,8 @@
 run:
 	@echo "Compiling..."
-	@g++ detector.cpp
+	@g++ src/detector.cpp
 	@echo "finished!"
+	./a.out
 
 clean:
 	rm *.out
