@@ -4,5 +4,4 @@ run:
 	@echo "finished!"
 
 clean:
-	rm *.csv
 	rm *.out
