@@ -24,12 +24,9 @@ private:
 	
 	//current car data
 	float time_previous;
-	float speed_X;
 	float speed_Y;
 	float speed_Z;
 	float r_speed_X;
-	float r_speed_Y;
-	float r_speed_Z;
 };
 
 #endif

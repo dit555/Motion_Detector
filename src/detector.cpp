@@ -14,7 +14,8 @@ using std::endl;
 int main(){	//don't need any args
 	string csv_file_path = "imu.csv";
 	cout << "reading file: " << csv_file_path << endl;
-
+	Car c(csv_file_path);
+	c.tokenize();
 
 	return 0;
 }
