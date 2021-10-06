@@ -11,7 +11,7 @@
 using std::string;
 using std::stof;
 
-const int init_n = 50; //how many lines are read to be used of calc of mean and stdev
+const int init_n = 10; //how many lines are read to be used of calc of mean and stdev
 
 Car::Car(string file_path){
 	data_file.open(file_path, std::ifstream::in);
