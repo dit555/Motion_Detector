@@ -6,6 +6,8 @@
 #include "../header/structs.hpp"
 #include "../header/data_math.hpp"
 
+#define DEBUG 1
+
 using std::string;
 using std::stof;
 
@@ -14,6 +16,10 @@ const int init_n = 50; //how many lines are read to be used of calc of mean and 
 Car::Car(string file_path){
 	data_file.open(file_path, std::ifstream::in);
 	output_file.open("output.csv", std::ofstream::out | std::ofstream::trunc);
+	time_previous = 0;
+	speed_Y = 0;
+	speed_Z = 0;
+	r_speed_X = 0;
 }
 
 struct data Car::tokenize(){
@@ -51,9 +57,8 @@ struct data Car::tokenize(){
 void Car::update(struct data d){
 	//convert m/s^2 into m/time_dif^2
 	float accel_scale; //acceleration m/s^2 scaled to 
-	float time_dif = d.timestamp - time_previous; //find time ellapsed in between calculations
-	accel_scale = time_dif / 1.0; 
-	accel_scale *= accel_scale; // accel_scale ^ 2
+	float time_dif = d.timestamp - time_previous; //imu sends data every 100ms 
+	accel_scale = time_dif * time_dif; // accel_scale ^ 2
 
 	//apply
 	//also make sure that new data is far enough way from the zero +/- stev margine
@@ -67,6 +72,7 @@ void Car::update(struct data d){
 	if (!(m.rot_speed_X - s.rot_speed_X < d.rot_speed_X && d.rot_speed_X < m.rot_speed_X + s.rot_speed_X))
 		r_speed_X = (d.rot_speed_X - m.rot_speed_X);
 
+	time_previous = d.timestamp;
 
 }
 
@@ -89,14 +95,15 @@ void Car::moving(){
 	//do the rest
 	cur = tokenize();
 	while (!cur.file_finish){
-		//std::cout << "doing: " << cur.timestamp << std::endl;
+		update(cur);
 		float spd = pyth(speed_Y, speed_Z);
-		std::cout << "spd: " << spd << ", rot_sp: " << r_speed_X << std::endl;
+		if(DEBUG) std::cout << "spd: " << spd << ", rot_sp: " << r_speed_X << std::endl;
 		if (spd >= 0.25 || (r_speed_X >= 0.25 && r_speed_X <= -0.25)){ //check if moving
 			write(cur.timestamp, 0); // moving
 		}
-		else
-			write(cur.timestamp, 1); //not moving
+		else{
+			write(cur.timestamp, 1); //not moving			
+		}
 		cur = tokenize();
 	}
 }
