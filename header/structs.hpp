@@ -8,7 +8,7 @@ struct data{
 	float timestamp;
 	float accel_Y;
 	float accel_Z;
-	float rot_speed_x;
+	float rot_speed_X;
 	int file_finish; //flag for end of file or  any file failure
 };
 
