@@ -45,20 +45,24 @@ struct data Car::tokenize(){
 	return temp;
 }
 
-void Car::update(struct data){
+void Car::update(struct data d){
 	//convert m/s^2 into m/time_dif^2
 	float accel_scale; //acceleration m/s^2 scaled to 
-	float time_dif = data.timestamp - time_previous; //find time ellapsed in between calculations
+	float time_dif = d.timestamp - time_previous; //find time ellapsed in between calculations
 	accel_scale = time_dif / 1.0; 
 	accel_scale *= accel_scale; // accel_scale ^ 2
 
 	//apply
-	speed_Y += (data.accel_Y - zero_accel_Y) * accel_scale; 
-	speed_X += (data.accel_Z - zero_accel_Z) * accel_scale;
+	speed_Y += (d.accel_Y - zero_accel_Y) * accel_scale; 
+	speed_Z += (d.accel_Z - zero_accel_Z) * accel_scale;
 }
 
 void Car::moving(){
 	struct data zero; //will be used to calc zeroing data
+	struct data cur; //curent data
+	for (int i = 0; i < 10; i++){
+		
+	}
 
 }
 

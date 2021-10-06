@@ -14,7 +14,7 @@ class Car{
 public:
 	Car(string file_path); //constructor input filepath name
 	struct data tokenize(); //read next line from file and separate data into data struct
-	void update(struct data); //updates speed of car
+	void update(struct data d); //updates speed of car
 	void moving(); //checks if moving and writes to the file
 	~Car(); //destructor	
 
