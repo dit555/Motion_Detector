@@ -15,8 +15,9 @@ public:
 	Car(string file_path); //constructor input filepath name
 	struct data tokenize(); //read next line from file and separate data into data struct
 	void update(struct data d); //updates speed of car
+	void write(float time, int flag); //writes data to new csv
 	void moving(); //checks if moving and writes to the file
-	~Car(); //destructor	
+	~Car(); //closes the files
 
 private:
 	std::ifstream data_file; //stores opened file
@@ -29,12 +30,8 @@ private:
 	float r_speed_X;
 
 	//zeroing data
-	float zero_accel_Y; //average accel_Y when car is stationary
-	float std_accel_Y; //standard deviation of accel_y when car is stationary
-	float zero_accel_Z;
-	float std_accel_Z;
-	float zero_rot_speed_X;
-	float std_rot_speed_X;
+	struct data mean; // holds the mean of the data
+	struct data stdev; // holds the stdev of the data
 };
 
 #endif

@@ -53,8 +53,15 @@ void Car::update(struct data d){
 	accel_scale *= accel_scale; // accel_scale ^ 2
 
 	//apply
-	speed_Y += (d.accel_Y - zero_accel_Y) * accel_scale; 
-	speed_Z += (d.accel_Z - zero_accel_Z) * accel_scale;
+	//also make sure that new data is far enough way from the zero +/- stev margine
+	if (mean.accel_Y + stdev.accel_Y < d.accel_Y && mean.accel_Y - stdev.accel_Y > d.accel_Y )
+		speed_Y += (d.accel_Y - mean.accel_Y) * accel_scale; 
+	if (mean.accel_Z + stdev.accel_Z < d.accel_Z && mean.accel_Z - stdev.accel_Z > d.accel_Z )
+		speed_Z += (d.accel_Z - mean.accel_Z) * accel_scale;
+}
+
+void Car::write(float time, int flag){
+	output_file << time << "," << flag << std::endl;
 }
 
 void Car::moving(){
