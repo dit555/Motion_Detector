@@ -34,6 +34,12 @@ struct data stdev_d(struct data m, struct data* d, const int size){
 	return s;
 }
 
+float pyth(float a, float b){
+	float c = a * a + b * b;
+	c = sqrt(c);
+	return c;
+}
+
 void printS(struct data d){
 	std::cout << d.timestamp << "," << d.accel_Y << "," << d.accel_Z << "," << d.rot_speed_X << std::endl;	
 }

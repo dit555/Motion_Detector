@@ -9,6 +9,8 @@
 using std::string;
 using std::stof;
 
+const int init_n = 50; //how many lines are read to be used of calc of mean and stdev
+
 Car::Car(string file_path){
 	data_file.open(file_path, std::ifstream::in);
 	output_file.open("output.csv", std::ofstream::out | std::ofstream::trunc);
@@ -55,10 +57,17 @@ void Car::update(struct data d){
 
 	//apply
 	//also make sure that new data is far enough way from the zero +/- stev margine
-	if (m.accel_Y + s.accel_Y < d.accel_Y && m.accel_Y - s.accel_Y > d.accel_Y )
+	//accel_Y
+	if (!(m.accel_Y - s.accel_Y < d.accel_Y && d.accel_Y < m.accel_Y + s.accel_Y))
 		speed_Y += (d.accel_Y - m.accel_Y) * accel_scale; 
-	if (m.accel_Z + s.accel_Z < d.accel_Z && m.accel_Z - s.accel_Z > d.accel_Z )
+	//accel_Z
+	if (!(m.accel_Z - s.accel_Z < d.accel_Z && d.accel_Z < m.accel_Z + s.accel_Z))
 		speed_Z += (d.accel_Z - m.accel_Z) * accel_scale;
+	//rot_spd_X
+	if (!(m.rot_speed_X - s.rot_speed_X < d.rot_speed_X && d.rot_speed_X < m.rot_speed_X + s.rot_speed_X))
+		r_speed_X = (d.rot_speed_X - m.rot_speed_X);
+
+
 }
 
 void Car::write(float time, int flag){
@@ -66,12 +75,30 @@ void Car::write(float time, int flag){
 }
 
 void Car::moving(){
-	struct data zero; //will be used to calc zeroing data
 	struct data cur; //curent data
-	for (int i = 0; i < 10; i++){
-		
+	
+	struct data ar[init_n]; //array be used for mean and stdev
+	for (int i = 0; i < init_n; i++){
+		ar[i] = tokenize();
+		time_previous = ar[i].timestamp;
+		write(ar[i].timestamp, 1);//vehicle is standing still during this time
 	}
-
+	m = mean_d(ar, init_n); //find mean
+	s = stdev_d(m, ar, init_n); //find stdev
+	
+	//do the rest
+	cur = tokenize();
+	while (!cur.file_finish){
+		//std::cout << "doing: " << cur.timestamp << std::endl;
+		float spd = pyth(speed_Y, speed_Z);
+		std::cout << "spd: " << spd << ", rot_sp: " << r_speed_X << std::endl;
+		if (spd >= 0.25 || (r_speed_X >= 0.25 && r_speed_X <= -0.25)){ //check if moving
+			write(cur.timestamp, 0); // moving
+		}
+		else
+			write(cur.timestamp, 1); //not moving
+		cur = tokenize();
+	}
 }
 
 Car::~Car(){
