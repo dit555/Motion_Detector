@@ -30,8 +30,8 @@ private:
 	float r_speed_X;
 
 	//zeroing data
-	struct data mean; // holds the mean of the data
-	struct data stdev; // holds the stdev of the data
+	struct data m; // holds the mean of the data
+	struct data s; // holds the stdev of the data
 };
 
 #endif

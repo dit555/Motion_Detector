@@ -1,5 +1,5 @@
-#ifndef __STRUCT__
-#define __STRUCT__
+#ifndef __STRUCTS__
+#define __STRUCTS__
 
 // This file defines structs to be used in the project
 

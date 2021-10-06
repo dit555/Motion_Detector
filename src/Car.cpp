@@ -4,6 +4,7 @@
 
 #include "../header/Car.hpp"
 #include "../header/structs.hpp"
+#include "../header/data_math.hpp"
 
 using std::string;
 using std::stof;
@@ -54,10 +55,10 @@ void Car::update(struct data d){
 
 	//apply
 	//also make sure that new data is far enough way from the zero +/- stev margine
-	if (mean.accel_Y + stdev.accel_Y < d.accel_Y && mean.accel_Y - stdev.accel_Y > d.accel_Y )
-		speed_Y += (d.accel_Y - mean.accel_Y) * accel_scale; 
-	if (mean.accel_Z + stdev.accel_Z < d.accel_Z && mean.accel_Z - stdev.accel_Z > d.accel_Z )
-		speed_Z += (d.accel_Z - mean.accel_Z) * accel_scale;
+	if (m.accel_Y + s.accel_Y < d.accel_Y && m.accel_Y - s.accel_Y > d.accel_Y )
+		speed_Y += (d.accel_Y - m.accel_Y) * accel_scale; 
+	if (m.accel_Z + s.accel_Z < d.accel_Z && m.accel_Z - s.accel_Z > d.accel_Z )
+		speed_Z += (d.accel_Z - m.accel_Z) * accel_scale;
 }
 
 void Car::write(float time, int flag){
