@@ -1,9 +1,9 @@
 # Motion_Detector
 ## Contents  
-1. How to Use
-2. Task Description
-3. Thought Process
-4. Description of files
+- [How to Use](#How-to-Use)
+- [Task Description](#Task-Description)
+- [Though Process](#Though-Process)
+- [Description of Files](#Description-of-Files)
 
 ## How to Use
 clone this project with: `git clone https://github.com/dit555/Motion_Detector.git`
@@ -64,5 +64,5 @@ Finally, we calculate the diagonal velocity of the car using car_speed_X and car
   * reads each line of the csv one by one and decides if the car is moving or not
 * `~Car`: the destructor for car class, closes both files.
 
-### src/detector.cpp:
+## src/detector.cpp:
 * contains the main that runs the program
