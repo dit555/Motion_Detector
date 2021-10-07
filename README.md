@@ -11,7 +11,7 @@ run `make` to compile the project
 to run the project: `./detector.out <input.csv name> <output.csv name>`
 
 ## Task Description
-The IMU installed on a regular car which stats with 0 speed. The attached file contains IMU measurements in a csv format. Columns are the following: Timestamp, acceleration X, acceleration Y, acceleration Z, rotation speed X, rotation speed Y, rotation speed Z, and status. Timestamps are seconds, acceleration is in meters/seconds^2, rotation speed is in radians/second. Create another csv file, with same timestamps and with “motion indication flag”: 0 when vehicle is moving, and “1” when it is standing still.
+The IMU installed on a regular car which stats with 0 speed. The input file contains IMU measurements in a csv format. Columns are the following: Timestamp, acceleration X, acceleration Y, acceleration Z, rotation speed X, rotation speed Y, rotation speed Z, and status. Timestamps are seconds, acceleration is in meters/seconds^2, rotation speed is in radians/second. Create another csv file, with same timestamps and with “motion indication flag”: 0 when vehicle is moving, and “1” when it is standing still.
 
 ## Thought Process
 When first looking at the data, we noticed that the row for acceleration X had an average of 9.8 m/s^2. This acceleration value is the acceleration of gravity. Knowing this we can orient the 3d axis like this:  
