@@ -7,7 +7,7 @@
 
 ## How to Use
 clone this project with: `git clone https://github.com/dit555/Motion_Detector.git`  
-run `make` to compile the project  
+run `make` to compile and run the project  
 to run the project: `./detector.out <input.csv name> <output.csv name>`
 
 ## Task Description
