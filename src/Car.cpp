@@ -6,8 +6,6 @@
 #include "../header/structs.hpp"
 #include "../header/data_math.hpp"
 
-#define DEBUG 1
-
 using std::string;
 using std::stof;
 
@@ -97,7 +95,8 @@ void Car::moving(){
 	while (!cur.file_finish){
 		update(cur);
 		float spd = pyth(speed_Y, speed_Z);
-		if(DEBUG) std::cout << "spd: " << spd << ", rot_sp: " << r_speed_X << std::endl;
+		
+		//is moving?
 		if (spd >= 0.25 || (r_speed_X >= 0.25 && r_speed_X <= -0.25)){ //check if moving
 			write(cur.timestamp, 0); // moving
 		}
