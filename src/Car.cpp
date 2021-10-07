@@ -83,7 +83,12 @@ void Car::update_car_speed(struct data d){
 }
 
 void Car::write_to_output(float time, int flag){
-	car_output_file << time << "," << flag << std::endl;
+	if(car_output_file.is_open()){
+		car_output_file << time << "," << flag << std::endl;
+	}
+	else {
+		eof_flag = 1; //if file not open handle as if eof
+	}
 }
 
 void Car::run_moving(){
