@@ -47,10 +47,10 @@ Finally, we calculate the diagonal velocity of the car using car_speed_X and car
 * contains a flag that signifies end of file
 
 ### header/data_math.hpp and src/data_math.cpp:
-* `struct data mean_d(struct data* d, const int size)`: takes an array of the data struct and then returns a new data struct with the mean value for each.
-* `struct data stdev_d(struct data m, struct data* d, const int size)`: takes the mean from about as well as the same array as above and returns a data struct with standard deviation
-* `float pyth(float a, float b)`: calculates the hypotneus of a triangle given two sides
-* `void printS(struct data d)`: prints all values of the data stuck in a comma separted list
+* `struct data mean_data(struct data* d, const int size)`: takes an array of the data struct and then returns a new data struct with the mean value for each.
+* `struct data standard_deviation_data(struct data m, struct data* d, const int size)`: takes the mean from about as well as the same array as above and returns a data struct with standard deviation
+* `float get_speed(float a, float b)`: calculates the hypotneus of a triangle given two sides
+* `void print_data(struct data d)`: prints all values of the data stuck in a comma separted list
 
 ### header/Car.hpp and src/Car.cpp:
 * `Carstd::string input_file_path, std::string output_file_path)`: constructor for car class, takes the file path for the input csv, and open the input and output files
