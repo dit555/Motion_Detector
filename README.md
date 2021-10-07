@@ -64,5 +64,5 @@ Finally, we calculate the diagonal velocity of the car using car_speed_X and car
   * reads each line of the csv one by one and decides if the car is moving or not
 * `~Car`: the destructor for car class, closes both files.
 
-## src/detector.cpp:
+### src/detector.cpp:
 * contains the main that runs the program
