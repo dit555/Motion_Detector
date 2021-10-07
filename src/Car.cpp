@@ -6,108 +6,119 @@
 #include "../header/structs.hpp"
 #include "../header/data_math.hpp"
 
-using std::string;
-using std::stof;
+const float speed_tolerance = 0.25;
+const int mean_array_size = 10;
 
-const int init_n = 10; //how many lines are read to be used of calc of mean and stdev
-
-Car::Car(string file_path){
-	data_file.open(file_path, std::ifstream::in);
-	output_file.open("output.csv", std::ofstream::out | std::ofstream::trunc);
-	time_previous = 0;
-	speed_Y = 0;
-	speed_Z = 0;
-	r_speed_X = 0;
+Car::Car(std::string input_file_path, std::string output_file_path){
+	car_data_file.open(input_file_path, std::ifstream::in);
+	car_output_file.open(output_file_path, std::ofstream::out | std::ofstream::trunc);
+	car_time_previous = 0;
+	car_speed_Y = 0;
+	car_speed_Z = 0;
+	car_rotation_speed_X = 0;
+	eof_flag = 0;
 }
 
-struct data Car::tokenize(){
-	struct data temp; //data struct to be returned 
-	string::size_type sz; //starting inde of stof
-	float value_temp; //variable that holds the float temporarely
-	string line;
-	if (data_file.is_open()){
-		if(std::getline(data_file, line)){
-			temp.timestamp = stof(line, &sz); //timestamp
-			sz++;
-			line = line.substr(sz);
-			value_temp = stof(line,&sz); //accel_X
-			sz++;
-			line = line.substr(sz);
-			temp.accel_Y = stof(line, &sz); //accel_Y
-			sz++;
-			line = line.substr(sz);
-			temp.accel_Z = stof(line, &sz); //accel_Z
-			sz++;
-			line = line.substr(sz);
-			temp.rot_speed_X = stof(line, &sz); //rot_spd_X
-			sz++;
-			line = line.substr(sz);
+struct data Car::tokenize_line(){
+	struct data data_return; //data struct to be returned 
+	std::string::size_type index; //starting inde of stof
+	std::string line;
+	if (car_data_file.is_open()){
+		if(std::getline(car_data_file, line)){
+			data_return.timestamp = std::stof(line, &index); //timestamp
+			index++;
+			line = line.substr(index);
+			std::stof(line,&index); //accel_X
+			index++;
+			line = line.substr(index);
+			data_return.accel_Y = std::stof(line, &index); //accel_Y
+			index++;
+			line = line.substr(index);
+			data_return.accel_Z = std::stof(line, &index); //accel_Z
+			index++;
+			line = line.substr(index);
+			data_return.rot_speed_X = std::stof(line, &index); //rot_spd_X
 		}
-		else
-			temp.file_finish = 1; //file is fully read
+		else{
+			eof_flag = 1; //file is fully read
+		}
 	}
-	else 
-		temp.file_finish = 1; //make sure file is open
-
-	return temp;
+	else{ 
+		eof_flag = 1; //file not open handle as if fully read
+	}
+	return data_return;
 }
 
-void Car::update(struct data d){
+void Car::update_car_speed(struct data d){
 	//convert m/s^2 into m/time_dif^2
 	float accel_scale; //acceleration m/s^2 scaled to 
-	float time_dif = d.timestamp - time_previous; //imu sends data every 100ms 
+	float time_dif = d.timestamp - car_time_previous; //imu sends data every 100ms 
 	accel_scale = time_dif * time_dif; // accel_scale ^ 2
 
 	//apply
 	//also make sure that new data is far enough way from the zero +/- stev margine
 	//accel_Y
-	if (!(m.accel_Y - s.accel_Y < d.accel_Y && d.accel_Y < m.accel_Y + s.accel_Y))
-		speed_Y += (d.accel_Y - m.accel_Y) * accel_scale; 
+	int accel_Y_upper = car_mean.accel_Y - car_standard_deviation.accel_Y < d.accel_Y;
+	int accel_Y_lower = d.accel_Y < car_mean.accel_Y + car_standard_deviation.accel_Y;
+	if (!(accel_Y_upper && accel_Y_lower)){
+		car_speed_Y += (d.accel_Y - car_mean.accel_Y) * accel_scale; 
+	}
+
 	//accel_Z
-	if (!(m.accel_Z - s.accel_Z < d.accel_Z && d.accel_Z < m.accel_Z + s.accel_Z))
-		speed_Z += (d.accel_Z - m.accel_Z) * accel_scale;
-	//rot_spd_X
-	if (!(m.rot_speed_X - s.rot_speed_X < d.rot_speed_X && d.rot_speed_X < m.rot_speed_X + s.rot_speed_X))
-		r_speed_X = (d.rot_speed_X - m.rot_speed_X);
+	int accel_Z_upper = car_mean.accel_Z - car_standard_deviation.accel_Z < d.accel_Z;
+	int accel_Z_lower = d.accel_Z < car_mean.accel_Z + car_standard_deviation.accel_Z;
+	if (!(accel_Z_upper && accel_Z_lower)){
+		car_speed_Z += (d.accel_Z - car_mean.accel_Z) * accel_scale; 
+	}
 
-	time_previous = d.timestamp;
+	//car_rotation_speed_X
+	int car_rotation_speed_X_upper = car_mean.rot_speed_X - car_standard_deviation.rot_speed_X < d.rot_speed_X;
+	int car_rotation_speed_X_lower = car_mean.rot_speed_X - car_standard_deviation.rot_speed_X > d.rot_speed_X;
+	if (!(car_rotation_speed_X_upper && car_rotation_speed_X_upper)){
+		car_speed_Y += (d.accel_Y - car_mean.accel_Y) * accel_scale; 
+	}
+	
+	car_time_previous = d.timestamp;
 
 }
 
-void Car::write(float time, int flag){
-	output_file << time << "," << flag << std::endl;
+void Car::write_to_output(float time, int flag){
+	car_output_file << time << "," << flag << std::endl;
 }
 
-void Car::moving(){
+void Car::run_moving(){
 	struct data cur; //curent data
 	
-	struct data ar[init_n]; //array be used for mean and stdev
-	for (int i = 0; i < init_n; i++){
-		ar[i] = tokenize();
-		time_previous = ar[i].timestamp;
-		write(ar[i].timestamp, 1);//vehicle is standing still during this time
+	struct data mean_array[mean_array_size]; //array be used for mean and stdev
+	for (int i = 0; i < mean_array_size; i++){
+		mean_array[i] = tokenize_line();
+		car_time_previous = mean_array[i].timestamp;
+		write_to_output(mean_array[i].timestamp, 1);//vehicle is standing still during this time
 	}
-	m = mean_d(ar, init_n); //find mean
-	s = stdev_d(m, ar, init_n); //find stdev
+	car_mean = mean_data(mean_array, mean_array_size); //find mean
+	car_standard_deviation = standard_deviation_data(car_mean, mean_array, mean_array_size); //find stdev
 	
 	//do the rest
-	cur = tokenize();
-	while (!cur.file_finish){
-		update(cur);
-		float spd = pyth(speed_Y, speed_Z);
+	cur = tokenize_line();
+	while (!eof_flag){
+		update_car_speed(cur);
+		float speed_magnitude = get_speed(car_speed_Y, car_speed_Z);
 		
 		//is moving?
-		if (spd >= 0.25 || (r_speed_X >= 0.25 && r_speed_X <= -0.25)){ //check if moving
-			write(cur.timestamp, 0); // moving
+		int speed_check = speed_magnitude >= speed_tolerance;
+		int rotation_check_upper = car_rotation_speed_X >= speed_tolerance;
+	       	int rotation_check_lower = car_rotation_speed_X <= -speed_tolerance;
+		if (speed_check || (rotation_check_upper && rotation_check_lower)){ //check if moving
+			write_to_output(cur.timestamp, 0); // moving
 		}
 		else{
-			write(cur.timestamp, 1); //not moving			
+			write_to_output(cur.timestamp, 1); //not moving			
 		}
-		cur = tokenize();
+		cur = tokenize_line();
 	}
 }
 
 Car::~Car(){
-	data_file.close();
-	output_file.close();
+	car_data_file.close();
+	car_output_file.close();
 }

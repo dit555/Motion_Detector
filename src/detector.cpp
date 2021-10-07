@@ -3,18 +3,18 @@
 
 #include "../header/Car.hpp"
 
-//std::string
-using std::string;
 
-//std:iostream
-using std::cout;
-using std::endl;
-
-int main(){	//don't need any args
-	string csv_file_path = "imu.csv";
-	cout << "reading file: " << csv_file_path << endl;
-	Car c(csv_file_path);
-	c.moving();
+int main(int argv, char** argc){
+	if(argv != 3) {
+		std::cout << "invalid arguments" << std::endl;
+	}
+	std::string read_file_path = argc[1];
+	std::string write_file_path = argc[2];
+	std::cout << "reading file: " << read_file_path << std::endl;
+	std::cout << "output file: " << write_file_path << std::endl;
+	Car c(read_file_path, write_file_path);
+	c.run_moving();
+	std::cout << "Done!" << std::endl;
 
 	return 0;
 }

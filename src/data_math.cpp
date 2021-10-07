@@ -3,8 +3,8 @@
 #include "../header/structs.hpp"
 
 
-struct data mean_d(struct data* d, const int size){
-	struct data m{0,0,0,0,0};
+struct data mean_data(struct data* d, const int size){
+	struct data m{0,0,0,0};
 	for (int i = 0; i < size; i++){
 		m.accel_Y += d[i].accel_Y;
 		m.accel_Z += d[i].accel_Z;
@@ -16,8 +16,8 @@ struct data mean_d(struct data* d, const int size){
 	return m;
 }
 
-struct data stdev_d(struct data m, struct data* d, const int size){
-	struct data s{0,0,0,0,0};
+struct data standard_deviation_data(struct data m, struct data* d, const int size){
+	struct data s{0,0,0,0};
 	for (int i = 0; i < size; i++){
 		s.accel_Y += pow(d[i].accel_Y - m.accel_Y, 2);
 		s.accel_Z += pow(d[i].accel_Z - m.accel_Z, 2);
@@ -34,12 +34,12 @@ struct data stdev_d(struct data m, struct data* d, const int size){
 	return s;
 }
 
-float pyth(float a, float b){
+float get_speed(float a, float b){
 	float c = a * a + b * b;
 	c = sqrt(c);
 	return c;
 }
 
-void printS(struct data d){
+void print_data(struct data d){
 	std::cout << d.timestamp << "," << d.accel_Y << "," << d.accel_Z << "," << d.rot_speed_X << std::endl;	
 }
