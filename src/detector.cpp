@@ -7,6 +7,7 @@
 int main(int argv, char** argc){
 	if(argv != 3) {
 		std::cout << "invalid arguments" << std::endl;
+		return 0;
 	}
 	std::string read_file_path = argc[1];
 	std::string write_file_path = argc[2];
