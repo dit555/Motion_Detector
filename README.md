@@ -6,8 +6,8 @@
 - [Description of Files](#Description-of-Files)
 
 ## How to Use
-clone this project with: `git clone https://github.com/dit555/Motion_Detector.git`
-run `make` to compile the project
+clone this project with: `git clone https://github.com/dit555/Motion_Detector.git`  
+run `make` to compile the project  
 to run the project: `./detector.out <input.csv name> <output.csv name>`
 
 ## Task Description
