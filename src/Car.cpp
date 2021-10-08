@@ -68,14 +68,14 @@ void Car::update_car_speed(struct data d){
 	int accel_Z_upper = car_mean.accel_Z - car_standard_deviation.accel_Z < d.accel_Z;
 	int accel_Z_lower = d.accel_Z < car_mean.accel_Z + car_standard_deviation.accel_Z;
 	if (!(accel_Z_upper && accel_Z_lower)){
-		car_speed_Z += d.rot_speed_X - car_mean.rot_speed_X; 
+		car_speed_Z += (d.accel_Z - car_mean.accel_Z) * accel_scale;  
 	}
 
 	//car_rotation_speed_X
 	int car_rotation_speed_X_upper = car_mean.rot_speed_X - car_standard_deviation.rot_speed_X < d.rot_speed_X;
 	int car_rotation_speed_X_lower = car_mean.rot_speed_X - car_standard_deviation.rot_speed_X > d.rot_speed_X;
 	if (!(car_rotation_speed_X_upper && car_rotation_speed_X_upper)){
-		car_rotation_speed_X += (d.accel_Y - car_mean.accel_Y) * accel_scale; 
+		car_rotation_speed_X += d.rot_speed_X - car_mean.rot_speed_X;
 	}
 	
 	car_time_previous = d.timestamp;

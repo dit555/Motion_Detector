@@ -39,7 +39,8 @@ Finally, we calculate the diagonal velocity of the car using car_speed_X and car
 * motion flag is 0 when car is moving, 1 when it is not moving
 
 ### Makefile
-* `make` or `make run`: compiles the project as normal
+* `make` or `make compile`: compiles the project as normal
+* `make run`: compiles the project and runs with imu.csv as input and output.csv as output 
 * `make clean`: removes \*.out files
 
 ### header/structs.hpp:
