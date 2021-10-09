@@ -72,7 +72,7 @@ void Car::update_car_speed(struct data d){
 	}
 
 	//car_rotation_speed_X
-	int car_rotation_speed_X_upper = car_mean.rot_speed_X - car_standard_deviation.rot_speed_X < d.rot_speed_X;
+	int car_rotation_speed_X_upper = car_mean.rot_speed_X + car_standard_deviation.rot_speed_X < d.rot_speed_X;
 	int car_rotation_speed_X_lower = car_mean.rot_speed_X - car_standard_deviation.rot_speed_X > d.rot_speed_X;
 	if (!(car_rotation_speed_X_upper && car_rotation_speed_X_upper)){
 		car_rotation_speed_X = d.rot_speed_X - car_mean.rot_speed_X;
@@ -109,6 +109,9 @@ void Car::run_moving(){
 		update_car_speed(cur);
 		float speed_magnitude = get_speed(car_speed_Y, car_speed_Z);
 		
+		//demo print
+		std::cout << speed_magnitude << "," << car_rotation_speed_X << std::endl;
+
 		//is moving?
 		int speed_check = speed_magnitude >= speed_tolerance;
 		int rotation_check_upper = car_rotation_speed_X >= speed_tolerance;
