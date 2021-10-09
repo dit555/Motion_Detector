@@ -58,23 +58,23 @@ void Car::update_car_speed(struct data d){
 	//apply
 	//also make sure that new data is far enough way from the zero +/- stev margine
 	//accel_Y
-	int accel_Y_upper = car_mean.accel_Y - car_standard_deviation.accel_Y < d.accel_Y;
-	int accel_Y_lower = d.accel_Y < car_mean.accel_Y + car_standard_deviation.accel_Y;
-	if (!(accel_Y_upper && accel_Y_lower)){
+	int accel_Y_lower = car_mean.accel_Y - car_standard_deviation.accel_Y > d.accel_Y;
+	int accel_Y_upper = d.accel_Y > car_mean.accel_Y + car_standard_deviation.accel_Y;
+	if (accel_Y_upper || accel_Y_lower){
 		car_speed_Y += (d.accel_Y - car_mean.accel_Y) * accel_scale; 
 	}
 
 	//accel_Z
-	int accel_Z_upper = car_mean.accel_Z - car_standard_deviation.accel_Z < d.accel_Z;
-	int accel_Z_lower = d.accel_Z < car_mean.accel_Z + car_standard_deviation.accel_Z;
-	if (!(accel_Z_upper && accel_Z_lower)){
+	int accel_Z_lower = car_mean.accel_Z - car_standard_deviation.accel_Z > d.accel_Z;
+	int accel_Z_upper = d.accel_Z > car_mean.accel_Z + car_standard_deviation.accel_Z;
+	if (accel_Z_upper || accel_Z_lower){
 		car_speed_Z += (d.accel_Z - car_mean.accel_Z) * accel_scale;  
 	}
 
 	//car_rotation_speed_X
-	int car_rotation_speed_X_upper = car_mean.rot_speed_X + car_standard_deviation.rot_speed_X > d.rot_speed_X;
-	int car_rotation_speed_X_lower = car_mean.rot_speed_X - car_standard_deviation.rot_speed_X < d.rot_speed_X;
-	if (!(car_rotation_speed_X_upper && car_rotation_speed_X_upper)){
+	int car_rotation_speed_X_lower = car_mean.rot_speed_X - car_standard_deviation.rot_speed_X > d.rot_speed_X;
+	int car_rotation_speed_X_upper = car_mean.rot_speed_X + car_standard_deviation.rot_speed_X < d.rot_speed_X;
+if (car_rotation_speed_X_lower || car_rotation_speed_X_upper){
 		car_rotation_speed_X = d.rot_speed_X - car_mean.rot_speed_X;
 	}
 	
@@ -109,9 +109,6 @@ void Car::run_moving(){
 		update_car_speed(cur);
 		float speed_magnitude = get_speed(car_speed_Y, car_speed_Z);
 		
-		//demo print
-		std::cout << speed_magnitude << "," << car_rotation_speed_X << std::endl;
-
 		//is moving?
 		int speed_check = speed_magnitude >= speed_tolerance;
 		int rotation_check_upper = car_rotation_speed_X >= speed_tolerance;
